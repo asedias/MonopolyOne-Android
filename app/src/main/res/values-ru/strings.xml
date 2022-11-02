@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Material3Test</string>
+    <string name="action_settings">Настройки</string>
+    <string name="inventory_label">Инвентарь</string>
+    <string name="friends_label">Друзья</string>
+    <string name="games_label">Игры</string>
+    <string name="chats_label">Чаты</string>
+    <string name="profile_label">Профиль</string>
+    <string name="market_label">Маркет</string>
+    <string name="login_desc">Авторизуйтесь с помощью вашего аккаунта на Monopoly One.</string>
+</resources>

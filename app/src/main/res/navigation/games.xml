@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/Games"
+    app:startDestination="@id/GamesFragment"
+    app:route="Games">
+    <fragment
+        android:id="@+id/GamesFragment"
+        android:name="com.example.material3test.fragment.BlankFragment"
+        android:label="@string/games_label"
+        tools:layout="@layout/fragment_blank">
+    </fragment>
+    <fragment
+        android:id="@+id/SettingsFragment"
+        android:name="com.example.material3test.fragment.SettingsFragment"
+        android:label="@string/action_settings"
+        tools:layout="@layout/fragment_blank">
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="android-app://com.asedias.monopolyone/settings" />
+    </fragment>
+</navigation>

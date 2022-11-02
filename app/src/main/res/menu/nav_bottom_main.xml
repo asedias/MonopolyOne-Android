@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.material3test.MainActivity">
+    <item
+        android:id="@+id/Games"
+        android:title="@string/games_label"
+        android:icon="@drawable/ic_nav_games" />
+    <item
+        android:id="@+id/Friends"
+        android:title="@string/friends_label"
+        android:icon="@drawable/ic_nav_friends" />
+    <item
+        android:id="@+id/Inventory"
+        android:title="@string/inventory_label"
+        android:icon="@drawable/ic_nav_inventory" />
+    <item
+        android:id="@+id/Market"
+        android:title="@string/market_label"
+        android:icon="@drawable/ic_nav_storefront" />
+</menu>
