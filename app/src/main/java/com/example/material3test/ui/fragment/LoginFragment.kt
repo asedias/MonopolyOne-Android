@@ -1,4 +1,4 @@
-package com.example.material3test.fragment
+package com.example.material3test.ui.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.material3test.databinding.FragmentLoginBinding
-import com.example.material3test.viewmodels.LoginViewModel
+import com.example.material3test.viewmodel.LoginViewModel
 
 class LoginFragment : Fragment() {
 

@@ -1,6 +1,5 @@
-package com.example.material3test.viewmodels
+package com.example.material3test.viewmodel
 
-import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.example.material3test.viewmodels
+package com.example.material3test.viewmodel
 
 import androidx.lifecycle.ViewModel
 

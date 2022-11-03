@@ -1,4 +1,4 @@
-package com.example.material3test.fragment
+package com.example.material3test.ui.fragment
 
 import android.os.Bundle
 import android.view.View

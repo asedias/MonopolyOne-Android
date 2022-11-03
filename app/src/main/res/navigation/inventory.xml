@@ -7,7 +7,7 @@
     app:route="Inventory">
     <fragment
         android:id="@+id/InventoryFragment"
-        android:name="com.example.material3test.fragment.BlankFragment"
+        android:name="com.example.material3test.ui.fragment.BlankFragment"
         android:label="@string/inventory_label"
         tools:layout="@layout/fragment_blank"/>
 </navigation>

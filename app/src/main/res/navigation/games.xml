@@ -7,13 +7,13 @@
     app:route="Games">
     <fragment
         android:id="@+id/GamesFragment"
-        android:name="com.example.material3test.fragment.BlankFragment"
+        android:name="com.example.material3test.ui.fragment.BlankFragment"
         android:label="@string/games_label"
         tools:layout="@layout/fragment_blank">
     </fragment>
     <fragment
         android:id="@+id/SettingsFragment"
-        android:name="com.example.material3test.fragment.SettingsFragment"
+        android:name="com.example.material3test.ui.fragment.SettingsFragment"
         android:label="@string/action_settings"
         tools:layout="@layout/fragment_blank">
         <deepLink
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/LoginFragment"
-        android:name="com.example.material3test.fragment.LoginFragment"
+        android:name="com.example.material3test.ui.fragment.LoginFragment"
         android:label="\@Authorization"
         tools:layout="@layout/fragment_login">
     </fragment>

@@ -1,14 +1,18 @@
-package com.example.material3test
+package com.example.material3test.ui
 
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
+import com.example.material3test.R
 import com.example.material3test.databinding.ActivityMainBinding
+import com.example.material3test.repository.UserRepository
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,6 +44,10 @@ class MainActivity : AppCompatActivity() {
         /*navController.addOnDestinationChangedListener { controller, destination, arguments ->
             binding.bottomNavBar.isVisible = destination.id != R.id.LoginFragment
         }*/
+
+        lifecycleScope.launch {
+            var response = UserRepository().GetUser(193)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

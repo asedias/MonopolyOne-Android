@@ -1,4 +1,4 @@
-package com.example.material3test.fragment
+package com.example.material3test.ui.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,13 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import com.example.material3test.LoginBottomSheet
-import com.example.material3test.viewmodels.BlankViewModel
+import com.example.material3test.viewmodel.BlankViewModel
 import com.example.material3test.R
 import com.example.material3test.databinding.FragmentBlankBinding
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class BlankFragment : Fragment() {
 
