@@ -12,6 +12,7 @@ import androidx.navigation.ui.*
 import com.example.material3test.R
 import com.example.material3test.databinding.ActivityMainBinding
 import com.example.material3test.repository.UserRepository
+import com.haroldadmin.cnradapter.NetworkResponse
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -46,7 +47,14 @@ class MainActivity : AppCompatActivity() {
         }*/
 
         lifecycleScope.launch {
-            var response = UserRepository().GetUser(193)
+            when(val user = UserRepository().getUser(1)) {
+                is NetworkResponse.Success -> {
+                    println("User Name: ${user.body.data[0].nick}")
+                }
+                is NetworkResponse.Error -> {
+                    println("Code: ${user.body?.description}")
+                }
+            }
         }
     }
 

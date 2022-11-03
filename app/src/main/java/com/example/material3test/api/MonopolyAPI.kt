@@ -1,7 +1,9 @@
 package com.example.material3test.api
 
-import com.example.material3test.model.ResponseData
+import com.example.material3test.model.ErrorResponse
+import com.example.material3test.model.DataResponse
 import com.example.material3test.model.User
+import com.haroldadmin.cnradapter.NetworkResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -12,8 +14,8 @@ interface MonopolyAPI {
     }
 
     @GET("users.get")
-    suspend fun GetUser(
+    suspend fun getUser(
         @Query("user_id")
         user_id: Int = 0
-    ) : ResponseData<User>
+    ) : NetworkResponse<DataResponse<User>, ErrorResponse>
 }

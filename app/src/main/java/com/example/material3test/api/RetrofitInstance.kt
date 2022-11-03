@@ -1,6 +1,7 @@
 package com.example.material3test.api
 
 import com.example.material3test.api.MonopolyAPI.Companion.BASE_URL
+import com.haroldadmin.cnradapter.NetworkResponseAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -17,6 +18,7 @@ class RetrofitInstance {
                 .build()
             Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                .addCallAdapterFactory(NetworkResponseAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()
