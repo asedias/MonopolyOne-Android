@@ -1,33 +1,20 @@
 package com.example.material3test
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
-import androidx.core.net.toUri
-import androidx.navigation.*
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.fragment.FragmentNavigator
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.fragment
-import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.example.material3test.databinding.ActivityMainBinding
-import com.example.material3test.fragment.BlankFragment
-import com.example.material3test.navigation.KeepStateNavigator
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
-
-    private var gamesBundle: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -42,34 +29,34 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavBar.setupWithNavController(navController)
 
         appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.Games,
-            R.id.Friends,
-            R.id.Inventory,
-            R.id.Market
+            R.id.GamesFragment,
+            R.id.FriendsFragment,
+            R.id.InventoryFragment,
+            R.id.MarketFragment
         ))
 
         setSupportActionBar(binding.toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
-    }
-
-    fun setupGraph() {
+        /*navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            binding.bottomNavBar.isVisible = destination.id != R.id.LoginFragment
+        }*/
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
+        //menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        //return onNavDestinationSelected(item, navController);
         navController.getBackStackEntry("Games").run {
             println(destination)
         }
-        
-        return when (item.itemId) {
+        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
+
+        /*return when (item.itemId) {
             R.id.SettingsFragment -> {
-                /*val request = NavDeepLinkRequest.Builder
+                val request = NavDeepLinkRequest.Builder
                     .fromUri("android-app://com.asedias.monopolyone/settings".toUri())
                     .build()
                 navController.navigate(request, navOptions {
@@ -83,11 +70,11 @@ class MainActivity : AppCompatActivity() {
                     popUpTo(popUpToId, popUpToBuilder = {
                         inclusive = true
                     })
-                })*/
+                })
                 true
             }
             else -> super.onOptionsItemSelected(item)
-        }
+        }*/
     }
 
     override fun onSupportNavigateUp(): Boolean {
