@@ -5,15 +5,11 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import com.example.material3test.R
 import com.example.material3test.databinding.ActivityMainBinding
-import com.example.material3test.repository.UserRepository
-import com.haroldadmin.cnradapter.NetworkResponse
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,20 +38,6 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
-        /*navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            binding.bottomNavBar.isVisible = destination.id != R.id.LoginFragment
-        }*/
-
-        lifecycleScope.launch {
-            when(val user = UserRepository().getUser(1)) {
-                is NetworkResponse.Success -> {
-                    println("User Name: ${user.body.data[0].nick}")
-                }
-                is NetworkResponse.Error -> {
-                    println("Code: ${user.body?.description}")
-                }
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -65,35 +47,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        navController.getBackStackEntry("Games").run {
-            println(destination)
-        }
         return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
-
-        /*return when (item.itemId) {
-            R.id.SettingsFragment -> {
-                val request = NavDeepLinkRequest.Builder
-                    .fromUri("android-app://com.asedias.monopolyone/settings".toUri())
-                    .build()
-                navController.navigate(request, navOptions {
-                    launchSingleTop = true
-                    restoreState = true
-                    popUpTo(popUpToId, popUpToBuilder = {
-                        inclusive = true
-                    })
-                })
-                navController.navigate(R.id.action_GamesFragment_to_SettingsFragment, Bundle.EMPTY, navOptions {
-                    popUpTo(popUpToId, popUpToBuilder = {
-                        inclusive = true
-                    })
-                })
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }*/
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
 }

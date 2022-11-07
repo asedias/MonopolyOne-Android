@@ -1,6 +1,6 @@
 package com.example.material3test.model
 
-data class DataResponse<T: Any>(
+data class ListResponse<T: Any>(
     val code: Int,
-    val `data`: T,
+    val `data`: List<T>,
 )

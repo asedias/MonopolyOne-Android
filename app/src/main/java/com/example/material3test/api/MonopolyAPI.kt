@@ -1,8 +1,8 @@
 package com.example.material3test.api
 
-import com.example.material3test.model.ErrorResponse
-import com.example.material3test.model.DataResponse
-import com.example.material3test.model.User
+import com.example.material3test.model.*
+import com.example.material3test.model.auth.Session
+import com.example.material3test.model.market.Market
 import com.haroldadmin.cnradapter.NetworkResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -17,5 +17,24 @@ interface MonopolyAPI {
     suspend fun getUser(
         @Query("user_id")
         user_id: Int = 0
-    ) : NetworkResponse<DataResponse<User>, ErrorResponse>
+    ) : NetworkResponse<ListResponse<User>, ErrorResponse>
+
+    //Auth
+    @GET("auth.signin")
+    suspend fun signIn(
+        @Query("email")
+        email: String,
+        @Query("password")
+        password: String
+    ): NetworkResponse<DataResponse<Session>, ErrorResponse>
+
+    @GET("market.getLastSellups")
+    suspend fun getLastSellups(
+        @Query("offset")
+        offset: Int = 0,
+        @Query("count")
+        count: Int = 20,
+        /*@Query("stc")
+        stc: Int = -1         */
+    ): NetworkResponse<DataResponse<Market>, ErrorResponse>
 }

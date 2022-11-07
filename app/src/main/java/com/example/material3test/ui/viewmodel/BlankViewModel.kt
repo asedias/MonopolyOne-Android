@@ -1,4 +1,4 @@
-package com.example.material3test.viewmodel
+package com.example.material3test.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

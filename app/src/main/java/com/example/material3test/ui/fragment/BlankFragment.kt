@@ -1,14 +1,15 @@
 package com.example.material3test.ui.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.material3test.viewmodel.BlankViewModel
 import com.example.material3test.R
 import com.example.material3test.databinding.FragmentBlankBinding
+import com.example.material3test.ui.LoginBottomSheet
+import com.example.material3test.ui.viewmodel.BlankViewModel
 
 class BlankFragment : Fragment() {
 
@@ -25,7 +26,7 @@ class BlankFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentBlankBinding.inflate(inflater, container, false)
         viewModel.title.observe(viewLifecycleOwner) { newResID ->
             binding.blankText.setText(newResID)
@@ -38,8 +39,8 @@ class BlankFragment : Fragment() {
         viewModel.setTitle(R.string.login_desc)
         binding.button.setOnClickListener {
             //findNavController().navigate(R.id.LoginFragment)
-            //val modalBottomSheet = LoginBottomSheet()
-            //activity?.supportFragmentManager?.let { it -> modalBottomSheet.show(it, LoginBottomSheet.TAG) }
+            val modalBottomSheet = LoginBottomSheet()
+            activity?.supportFragmentManager?.let { it -> modalBottomSheet.show(it, LoginBottomSheet.TAG) }
         }
     }
 

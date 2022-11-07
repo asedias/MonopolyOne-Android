@@ -20,10 +20,4 @@
             android:id="@+id/deepLink"
             app:uri="android-app://com.asedias.monopolyone/settings" />
     </fragment>
-    <fragment
-        android:id="@+id/LoginFragment"
-        android:name="com.example.material3test.ui.fragment.LoginFragment"
-        android:label="\@Authorization"
-        tools:layout="@layout/fragment_login">
-    </fragment>
 </navigation>
