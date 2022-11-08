@@ -28,7 +28,7 @@ class SessionManager(context: Context) {
 
     private fun loadSessionData(): Session = Session(
         user_id = loadUserID(),
-        access_token = loadAccessToken(),
+        access_token = "74XXJ3gCx9HxTPNMRsfFb17pk27C8Dzn",//loadAccessToken(),
         expires_in = loadExpiresIn(),
         refresh_token = loadRefreshToken(),
     )
@@ -42,6 +42,7 @@ class SessionManager(context: Context) {
 
         var currentSession: Session? = null
         var accessToken: String? = null
+        var user_id: Int = -1
     }
 
     init {
@@ -49,7 +50,6 @@ class SessionManager(context: Context) {
         if(session.user_id > 0) {
             currentSession = session
             accessToken = currentSession!!.access_token
-            println("Auth load from local data @${currentSession!!.user_id}")
         }
     }
 

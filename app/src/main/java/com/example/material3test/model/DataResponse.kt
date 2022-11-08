@@ -1,6 +1,8 @@
 package com.example.material3test.model
 
 data class DataResponse<T: Any>(
-    val code: Int,
-    val `data`: T,
+    val loading: Boolean = false,
+    val code: Int = -1,
+    val data: T? = null,
+
 )

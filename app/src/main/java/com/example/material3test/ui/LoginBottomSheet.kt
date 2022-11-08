@@ -50,7 +50,11 @@ class LoginBottomSheet : BottomSheetDialogFragment() {
                 when(val auth = AuthRepository().signIn(email, password)) {
                     is NetworkResponse.Success -> {
                         println(auth.toString())
-                        SessionManager(requireContext()).saveSessionData(auth.body.data)
+                        auth.body.data?.let { it1 ->
+                            SessionManager(requireContext()).saveSessionData(
+                                it1
+                            )
+                        }
                         requireDialog().dismiss()
                         println("User logged ${SessionManager.currentSession?.user_id}@${SessionManager.currentSession?.access_token}")
                     }

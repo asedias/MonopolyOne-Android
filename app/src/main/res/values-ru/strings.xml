@@ -9,4 +9,19 @@
     <string name="profile_label">Профиль</string>
     <string name="market_label">Маркет</string>
     <string name="login_desc">Авторизуйтесь с помощью вашего аккаунта на Monopoly One.</string>
+    <string name="try_again">Повторить</string>
+    <string name="network_error">Проверьте подключение к интернету и попробуйте снова.</string>
+    <string name="code_1">Ошибка авторизации.</string>
+    <string name="code_2">Не передан обязательный параметр или переданные параметры невалидны.</string>
+    <string name="code_3">Внутренняя ошибка сервера.</string>
+    <string name="code_4">Нет прав на выполнение этого запроса.</string>
+    <string name="code_5">Вызван неизвестный метод API.</string>
+    <string name="code_6">Превышено число запрашиваемых объектов.</string>
+    <string name="code_7">Превышен лимит запросов.</string>
+    <string name="code_8">Требуется капча.</string>
+    <string name="code_10">Сервер не может обработать запрос прямо сейчас.</string>
+    <string name="code_11">Требуется подтверждение.</string>
+    <string name="code_12">Требуется ввод кода из аутентификатора.</string>
+    <string name="code_98">Метод находится на технических работах и временно отключён.</string>
+    <string name="code_99">Неизвестная ошибка.</string>
 </resources>

@@ -1,7 +1,9 @@
 package com.example.material3test.api
 
+import com.example.material3test.SessionManager
 import com.example.material3test.model.*
 import com.example.material3test.model.auth.Session
+import com.example.material3test.model.friends.FriendsData
 import com.example.material3test.model.market.Market
 import com.haroldadmin.cnradapter.NetworkResponse
 import retrofit2.http.GET
@@ -37,4 +39,20 @@ interface MonopolyAPI {
         /*@Query("stc")
         stc: Int = -1         */
     ): NetworkResponse<DataResponse<Market>, ErrorResponse>
+
+    @GET("friends.get")
+    suspend fun getFriends(
+        @Query("offset")
+        offset: Int = 0,
+        @Query("count")
+        count: Int = 20,
+        @Query("add_user")
+        add_user: Int = 0,
+        @Query("online")
+        online: Int = 0,
+        @Query("user_id")
+        user_id: Int = SessionManager.currentSession!!.user_id,
+        @Query("access_token")
+        access_token: String? = SessionManager.accessToken
+    ): NetworkResponse<DataResponse<FriendsData>, ErrorResponse>
 }
