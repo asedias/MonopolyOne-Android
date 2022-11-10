@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.example.material3test.SessionManager
 import com.example.material3test.databinding.SheetLoginBinding
 import com.example.material3test.repository.AuthRepository
 import com.example.material3test.ui.viewmodel.LoginViewModel
+import com.example.material3test.util.Auth
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.haroldadmin.cnradapter.NetworkResponse
 
@@ -51,13 +51,10 @@ class LoginBottomSheet : BottomSheetDialogFragment() {
                     is NetworkResponse.Success -> {
                         println(auth.toString())
                         auth.body.data?.let { it1 ->
-                            SessionManager(requireContext()).saveSessionData(
-                                it1
-                            )
+                            Auth().authorize(it1)
                         }
                         requireDialog().dismiss()
-                        println("User logged ${SessionManager.currentSession?.user_id}@${SessionManager.currentSession?.access_token}")
-                    }
+                        }
                     is NetworkResponse.ServerError -> {
                         println("Server Error Code(${auth.body?.code}): ${auth.body?.description}")
                     }

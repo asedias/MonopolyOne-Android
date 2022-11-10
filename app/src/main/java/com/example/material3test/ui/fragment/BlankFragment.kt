@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.material3test.R
-import com.example.material3test.databinding.FragmentBlankBinding
+import com.example.material3test.databinding.HeaderGamesBinding
 import com.example.material3test.ui.LoginBottomSheet
 import com.example.material3test.ui.viewmodel.BlankViewModel
 
@@ -16,7 +15,7 @@ class BlankFragment : Fragment() {
     companion object {
         fun newInstance() = BlankFragment()
     }
-    private var _binding: FragmentBlankBinding? = null
+    private var _binding: HeaderGamesBinding? = null
     private val viewModel: BlankViewModel by viewModels()
 
     // This property is only valid between onCreateView and
@@ -27,17 +26,17 @@ class BlankFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentBlankBinding.inflate(inflater, container, false)
-        viewModel.title.observe(viewLifecycleOwner) { newResID ->
+        _binding = HeaderGamesBinding.inflate(inflater, container, false)
+        /*viewModel.title.observe(viewLifecycleOwner) { newResID ->
             binding.blankText.setText(newResID)
-        }
+        }*/
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.setTitle(R.string.login_desc)
-        binding.button.setOnClickListener {
+        //viewModel.setTitle(R.string.login_desc)
+        binding.chatButton.setOnClickListener {
             //findNavController().navigate(R.id.LoginFragment)
             val modalBottomSheet = LoginBottomSheet()
             activity?.supportFragmentManager?.let { it -> modalBottomSheet.show(it, LoginBottomSheet.TAG) }

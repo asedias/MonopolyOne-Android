@@ -4,16 +4,18 @@ import android.app.Application
 import android.os.Build
 import com.example.material3test.databinding.ErrorViewBinding
 import com.google.android.material.color.DynamicColors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 class ExampleApp : Application() {
 
-    private lateinit var sessionManager: SessionManager
+    val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     override fun onCreate() {
         super.onCreate()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             DynamicColors.applyToActivitiesIfAvailable(this)
-            sessionManager = SessionManager(this)
         }
     }
 }

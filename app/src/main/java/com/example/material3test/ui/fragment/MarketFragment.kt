@@ -12,13 +12,12 @@ import com.example.material3test.repository.MarketRepository
 import com.example.material3test.setErrorCode
 import com.example.material3test.ui.adapter.MarketAdapter
 import com.example.material3test.ui.viewmodel.MarketViewModel
-import com.example.material3test.ui.viewmodel.MarketViewModelProviderFactory
 import com.haroldadmin.cnradapter.NetworkResponse
 
 class MarketFragment : Fragment() {
 
     private val viewModel: MarketViewModel by viewModels() {
-        MarketViewModelProviderFactory(MarketRepository())
+        MarketViewModel.ProviderFactory(MarketRepository())
     }
     private lateinit var marketAdapter: MarketAdapter
 
