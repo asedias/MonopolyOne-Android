@@ -5,15 +5,17 @@
     android:id="@+id/Games"
     app:startDestination="@id/GamesFragment"
     app:route="Games">
+
+    <!-- android:name="com.asedias.monopolyone.ui.fragment.GamesFragment" -->
     <fragment
         android:id="@+id/GamesFragment"
-        android:name="com.example.material3test.ui.fragment.BlankFragment"
+        android:name="com.asedias.monopolyone.ui.fragment.GamesFragment"
         android:label="@string/games_label"
         tools:layout="@layout/fragment_blank">
     </fragment>
     <fragment
         android:id="@+id/SettingsFragment"
-        android:name="com.example.material3test.ui.fragment.SettingsFragment"
+        android:name="com.asedias.monopolyone.ui.fragment.SettingsFragment"
         android:label="@string/action_settings"
         tools:layout="@layout/fragment_blank">
         <deepLink

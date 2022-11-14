@@ -7,7 +7,7 @@
     app:route="Market">
     <fragment
         android:id="@+id/MarketFragment"
-        android:name="com.example.material3test.ui.fragment.MarketFragment"
+        android:name="com.asedias.monopolyone.ui.fragment.MarketFragment"
         android:label="@string/market_label"
         tools:layout="@layout/fragment_blank"/>
 </navigation>

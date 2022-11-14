@@ -2,8 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.material3test.ui.MainActivity">
+    tools:context="com.asedias.monopolyone.ui.MainActivity">
     <item
-        android:id="@+id/SettingsFragment"
-        android:title="@string/action_settings" />
+        android:id="@+id/ProfileMenu"
+        android:enabled="true"
+        android:title="@string/profile_label"
+        app:showAsAction="always" />
+
+    <!-- app:actionViewClass="com.google.android.material.imageview.ShapeableImageView" -->
 </menu>
