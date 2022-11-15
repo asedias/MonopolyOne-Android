@@ -1,6 +1,7 @@
-package com.asedias.monopolyone.ui
+package com.asedias.monopolyone.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import com.asedias.monopolyone.databinding.SheetLoginBinding
 import com.asedias.monopolyone.repository.AuthRepository
 import com.asedias.monopolyone.ui.viewmodel.LoginViewModel
 import com.asedias.monopolyone.util.AuthData
+import com.asedias.monopolyone.util.Constants
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.haroldadmin.cnradapter.NetworkResponse
 
@@ -47,22 +49,31 @@ class LoginBottomSheet : BottomSheetDialogFragment() {
                 val email = binding.email.text.toString()
                 val password = binding.pass.text.toString()
                 viewModel.setIsLoading(true)
-                when(val auth = AuthRepository().signIn(email, password)) {
+                when (val auth = AuthRepository().signIn(email, password)) {
                     is NetworkResponse.Success -> {
-                        println(auth.toString())
+                        Log.d(Constants.TAG_LOGIN, auth.body.toString())
                         auth.body.data?.let { it1 ->
                             AuthData().authorize(it1)
                         }
                         requireDialog().dismiss()
-                        }
+                    }
                     is NetworkResponse.ServerError -> {
-                        println("Server Error Code(${auth.body?.code}): ${auth.body?.description}")
+                        Log.d(
+                            Constants.TAG_LOGIN,
+                            "Server Error Code(${auth.body?.code}): ${auth.body?.description}"
+                        )
                     }
                     is NetworkResponse.NetworkError -> {
-                        println("Network Error Code(${auth.body?.code}): ${auth.body?.description}")
+                        Log.d(
+                            Constants.TAG_LOGIN,
+                            "Network Error Code(${auth.body?.code}): ${auth.body?.description}"
+                        )
                     }
                     is NetworkResponse.UnknownError -> {
-                        println("Unknown Error Code(${auth.body?.code}): ${auth.body?.description}")
+                        Log.d(
+                            Constants.TAG_LOGIN,
+                            "Unknown Error Code(${auth.body?.code}): ${auth.body?.description}"
+                        )
                     }
                 }
                 viewModel.setIsLoading(false)

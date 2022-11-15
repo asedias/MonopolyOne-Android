@@ -1,6 +1,7 @@
 package com.asedias.monopolyone.util
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.asedias.monopolyone.repository.AuthRepository
@@ -41,7 +42,8 @@ class AuthStoreManager(context: Context, owner: LifecycleOwner) {
                 session?.let { AuthData().authorize(it) }
             }
             is NetworkResponse.Error -> {
-                req.body?.description.let { println("Refreshing Token Error: $it") }
+                Log.d(Constants.TAG_AUTH, "Couldn't refresh token")
+                req.body?.description.let { Log.d(Constants.TAG_AUTH, it.toString()) }
             }
         }
     }
@@ -56,15 +58,15 @@ class AuthStoreManager(context: Context, owner: LifecycleOwner) {
 
     init {
         load()
-        println("AuthStoreManager: Saved user ${AuthData.accessToken}@${AuthData.userId}")
+        Log.d(Constants.TAG_AUTH, "Load user ${AuthData.userId}")
         if(AuthData.userId > 0 && System.currentTimeMillis() > AuthData.expiresTime) {
-            println("AuthStoreManager: Updating user token")
+            Log.d(Constants.TAG_AUTH, "User token need to update")
             owner.lifecycleScope.launchWhenStarted {
                 refresh()
             }
         }
         AuthData.observableSession.observe(owner) {
-            println("AuthStoreManager: User login ${AuthData.accessToken}@${AuthData.userId}")
+            Log.d(Constants.TAG_AUTH, "User logged ${AuthData.userId}")
             save()
         }
     }

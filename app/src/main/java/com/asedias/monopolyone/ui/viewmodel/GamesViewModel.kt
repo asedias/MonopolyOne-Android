@@ -1,5 +1,8 @@
 package com.asedias.monopolyone.ui.viewmodel
 
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.asedias.monopolyone.api.MonopolyWebSocket
@@ -7,20 +10,19 @@ import com.asedias.monopolyone.model.games.GamesResult
 import com.asedias.monopolyone.model.games.Room
 import com.asedias.monopolyone.model.websocket.EventMessage
 import com.asedias.monopolyone.repository.MainRepository
+import com.asedias.monopolyone.util.Constants
 import com.asedias.monopolyone.util.WSMessage
 import com.haroldadmin.cnradapter.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class GamesViewModel @Inject constructor(private val repository: MainRepository) : ViewModel() {
 
-    private lateinit var data: GamesResult
-    private val _games = MutableSharedFlow<GamesResult>()
-    val games = _games.asSharedFlow()
+    lateinit var data: GamesResult
+    private var _games = MutableLiveData<GamesResult>()
+    var games: LiveData<GamesResult> = _games
 
     init {
         getGamesInfo()
@@ -30,7 +32,7 @@ class GamesViewModel @Inject constructor(private val repository: MainRepository)
         when (val games = repository.getGamesInfo()) {
             is NetworkResponse.Success -> {
                 data = games.body.result
-                _games.emit(data)
+                _games.postValue(data)
                 retrieveEvents()
             }
             is NetworkResponse.ServerError -> {
@@ -63,13 +65,15 @@ class GamesViewModel @Inject constructor(private val repository: MainRepository)
 
     private suspend fun handleEvent(message: EventMessage) {
         message.events.forEach { event ->
+            Log.d(Constants.TAG_WEB_SOCKET, "${event.room_id}: ${event.type}")
             when (event.type) {
                 "room.set" -> message.rooms!!.forEach { addRoom(it) }
                 "room.delete" -> deleteRoom(event.room_id)
-                "room.patch" -> updateRoom(event.room_id, event.patches!!)
+                "room.patch" -> updateRoom(event.room_id, event.patches!!, event.v)
+                "gchat.add" -> Unit
             }
         }
-        _games.emit(data)
+        _games.postValue(data)
     }
 
     private fun addRoom(room: Room) = data.rooms.rooms.add(room)
@@ -90,8 +94,10 @@ class GamesViewModel @Inject constructor(private val repository: MainRepository)
     private fun removePlayer(room: Room, team: Int, user_id: Int) =
         room.players[team].remove(user_id)
 
-    private fun updateRoom(room_id: String, patches: List<List<Any>>) {
+    private fun updateRoom(room_id: String, patches: List<List<Any>>, v: Int) {
         findRoom(room_id)?.let { room ->
+            if(room.v >= v) return Unit
+            room.v = v
             patches.forEach { patch ->
                 val code = (patch[0] as Double).toInt()
                 when (patch[1] as String) {

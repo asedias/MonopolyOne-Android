@@ -1,6 +1,7 @@
 package com.asedias.monopolyone.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -11,13 +12,16 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import com.asedias.monopolyone.R
+import com.asedias.monopolyone.api.MonopolyWebSocket
 import com.asedias.monopolyone.databinding.ActivityMainBinding
 import com.asedias.monopolyone.repository.MainRepository
 import com.asedias.monopolyone.ui.viewmodel.MainActivityViewModel
-import com.asedias.monopolyone.util.AuthData
 import com.asedias.monopolyone.util.AuthStoreManager
-import com.google.gson.Gson
+import com.asedias.monopolyone.util.WSState
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -58,22 +62,17 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        //AuthData.observableUserLogged.observe(this) {
-            //if(it) viewModel.getAccountInfo()
-        //}
+        MonopolyWebSocket().start()
         lifecycleScope.launchWhenStarted {
-            /*MonopolyWebSocket().start { message ->
-                when(message) {
-                    is WSMessage.Event -> {
-                        println(message.event)
+            MonopolyWebSocket.state.collectLatest {
+                when(it) {
+                    is WSState.Open -> Log.d("MonopolyWebSocket", "Open")
+                    is WSState.Connected -> Log.d("MonopolyWebSocket", "Connected")
+                    is WSState.Failure -> {
+                        Log.d("MonopolyWebSocket", it.t.localizedMessage)
                     }
-                    else -> {}
+                    is WSState.Closed -> Log.d("MonopolyWebSocket", "Closed cause ${it.reason}")
                 }
-            }*/
-        }
-        AuthData.observableAuthMessage.observe(this) {
-            it?.let { message ->
-                println("WS: ${Gson().toJson(message)}")
             }
         }
     }

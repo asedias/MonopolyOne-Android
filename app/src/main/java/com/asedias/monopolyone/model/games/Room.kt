@@ -16,5 +16,5 @@ data class Room(
     val room_id: String,
     val settings: Settings,
     val status: Int,
-    val v: Int
+    var v: Int
 )

@@ -5,15 +5,14 @@ import com.asedias.monopolyone.repository.MainRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
-@InstallIn(SingletonComponent::class)
-object AppModule {
-
+@InstallIn(ViewModelComponent::class)
+internal object AppModule {
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun provideMainRepository(app: Application) : MainRepository {
         return MainRepository()
     }

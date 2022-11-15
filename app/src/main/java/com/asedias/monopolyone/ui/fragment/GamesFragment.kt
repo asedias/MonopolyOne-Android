@@ -10,15 +10,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.asedias.monopolyone.databinding.FragmentRecyclerViewBinding
-import com.asedias.monopolyone.ui.adapter.GamesSimpleAdapter
+import com.asedias.monopolyone.ui.adapter.GamesAdapter
 import com.asedias.monopolyone.ui.viewmodel.GamesViewModel
 import com.asedias.monopolyone.util.setErrorCode
-import kotlinx.coroutines.flow.collectLatest
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class GamesFragment : Fragment() {
 
     private val viewModel: GamesViewModel by viewModels()
-    private lateinit var adapter: GamesSimpleAdapter
+    private lateinit var adapter: GamesAdapter
 
     companion object {
         fun newInstance() = GamesFragment()
@@ -38,13 +40,13 @@ class GamesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = GamesSimpleAdapter()
+        adapter = GamesAdapter()
         binding.rvMarketThings.apply {
             adapter = this@GamesFragment.adapter
             layoutManager = LinearLayoutManager(activity)
         }
-        lifecycleScope.launchWhenStarted {
-            viewModel.games.collectLatest {
+        lifecycleScope.launch {
+            viewModel.games.observe(viewLifecycleOwner) {
                 adapter.setData(it)
             }
         }
