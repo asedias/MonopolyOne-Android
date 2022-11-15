@@ -8,17 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.asedias.monopolyone.databinding.FragmentRecyclerViewBinding
-import com.asedias.monopolyone.repository.MarketRepository
-import com.asedias.monopolyone.util.setErrorCode
 import com.asedias.monopolyone.ui.adapter.MarketAdapter
 import com.asedias.monopolyone.ui.viewmodel.MarketViewModel
+import com.asedias.monopolyone.util.setErrorCode
 import com.haroldadmin.cnradapter.NetworkResponse
 
 class MarketFragment : Fragment() {
 
-    private val viewModel: MarketViewModel by viewModels() {
-        MarketViewModel.ProviderFactory(MarketRepository())
-    }
+    private val viewModel: MarketViewModel by viewModels()
     private lateinit var marketAdapter: MarketAdapter
 
     companion object {

@@ -1,6 +1,7 @@
 package com.asedias.monopolyone.di
 
 import android.app.Application
+import com.asedias.monopolyone.api.MonopolyRepository
 import com.asedias.monopolyone.repository.MainRepository
 import dagger.Module
 import dagger.Provides
@@ -15,5 +16,11 @@ internal object AppModule {
     @ViewModelScoped
     fun provideMainRepository(app: Application) : MainRepository {
         return MainRepository()
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideMonopolyRepo(app: Application) : MonopolyRepository {
+        return MonopolyRepository()
     }
 }

@@ -1,6 +1,6 @@
 package com.asedias.monopolyone.api
 
-import com.asedias.monopolyone.api.MonopolyRepository.Companion.BASE_URL
+import com.asedias.monopolyone.api.MonopolyAPI.Companion.BASE_URL
 import com.haroldadmin.cnradapter.NetworkResponseAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -17,8 +17,8 @@ class RetrofitInstance {
                 .addCallAdapterFactory(NetworkResponseAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create()).client(client).build()
         }
-        val api: MonopolyRepository by lazy {
-            retrofit.create(MonopolyRepository::class.java)
+        val api: MonopolyAPI by lazy {
+            retrofit.create(MonopolyAPI::class.java)
         }
     }
 }
