@@ -5,20 +5,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.asedias.monopolyone.api.MonopolyRepository
 import com.asedias.monopolyone.api.MonopolyWebSocket
 import com.asedias.monopolyone.model.games.GamesResult
 import com.asedias.monopolyone.model.games.Room
 import com.asedias.monopolyone.model.websocket.EventMessage
-import com.asedias.monopolyone.repository.MainRepository
 import com.asedias.monopolyone.util.Constants
-import com.asedias.monopolyone.util.WSMessage
+import com.asedias.monopolyone.util.SocketMessage
 import com.haroldadmin.cnradapter.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GamesViewModel @Inject constructor(private val repository: MainRepository) : ViewModel() {
+class GamesViewModel @Inject constructor(private val repository: MonopolyRepository) : ViewModel() {
 
     lateinit var data: GamesResult
     private var _games = MutableLiveData<GamesResult>()
@@ -29,20 +29,20 @@ class GamesViewModel @Inject constructor(private val repository: MainRepository)
     }
 
     fun getGamesInfo() = viewModelScope.launch {
-        when (val games = repository.getGamesInfo()) {
+        when (val games = repository.getGames()) {
             is NetworkResponse.Success -> {
                 data = games.body.result
                 _games.postValue(data)
                 retrieveEvents()
             }
             is NetworkResponse.ServerError -> {
-                //error.postValue(response.body?.code ?: 0)
+                Log.e("GamesViewModel", games.body?.description ?: "Unknown error")
             }
             is NetworkResponse.NetworkError -> {
-                //error.postValue(0)
+                Log.e("GamesViewModel", games.body?.description ?: "Unknown error")
             }
             is NetworkResponse.UnknownError -> {
-                //error.postValue(99)
+                Log.e("GamesViewModel", games.body?.description ?: "Unknown error")
             }
         }
     }
@@ -50,15 +50,15 @@ class GamesViewModel @Inject constructor(private val repository: MainRepository)
     private suspend fun retrieveEvents() {
         MonopolyWebSocket.channel.collect() { wsMessage ->
             when (wsMessage) {
-                is WSMessage.Event -> {
+                is SocketMessage.Event -> {
                     wsMessage.data.users_data?.let {
                         data.rooms.users_data.addAll(it)
                     }
                     handleEvent(wsMessage.data)
                 }
-                is WSMessage.Auth -> {}
-                is WSMessage.Status -> {}
-                is WSMessage.Error -> {}
+                is SocketMessage.Auth -> {}
+                is SocketMessage.Status -> {}
+                is SocketMessage.Error -> {}
             }
         }
     }

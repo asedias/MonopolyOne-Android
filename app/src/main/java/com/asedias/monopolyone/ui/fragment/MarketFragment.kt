@@ -12,7 +12,9 @@ import com.asedias.monopolyone.ui.adapter.MarketAdapter
 import com.asedias.monopolyone.ui.viewmodel.MarketViewModel
 import com.asedias.monopolyone.util.setErrorCode
 import com.haroldadmin.cnradapter.NetworkResponse
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MarketFragment : Fragment() {
 
     private val viewModel: MarketViewModel by viewModels()
@@ -37,7 +39,7 @@ class MarketFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         marketAdapter = MarketAdapter()
-        binding.rvMarketThings.apply {
+        binding.recyclerView.apply {
             adapter = marketAdapter
             layoutManager = LinearLayoutManager(activity)
         }

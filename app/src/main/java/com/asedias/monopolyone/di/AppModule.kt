@@ -14,13 +14,13 @@ import dagger.hilt.android.scopes.ViewModelScoped
 internal object AppModule {
     @Provides
     @ViewModelScoped
-    fun provideMainRepository(app: Application) : MainRepository {
+    fun provideMainRepository(app: Application): MainRepository {
         return MainRepository()
     }
 
     @Provides
     @ViewModelScoped
-    fun provideMonopolyRepo(app: Application) : MonopolyRepository {
+    fun provideMonopolyRepo(app: Application): MonopolyRepository {
         return MonopolyRepository()
     }
 }

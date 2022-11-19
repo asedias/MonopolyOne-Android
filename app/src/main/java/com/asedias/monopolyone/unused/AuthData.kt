@@ -1,4 +1,4 @@
-package com.asedias.monopolyone.util
+package com.asedias.monopolyone.unused
 
 import androidx.lifecycle.MutableLiveData
 import com.asedias.monopolyone.model.auth.Session

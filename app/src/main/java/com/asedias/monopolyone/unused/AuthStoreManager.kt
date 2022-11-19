@@ -1,13 +1,14 @@
-package com.asedias.monopolyone.util
+package com.asedias.monopolyone.unused
 
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.asedias.monopolyone.repository.AuthRepository
+import com.asedias.monopolyone.util.Constants
 import com.haroldadmin.cnradapter.NetworkResponse
 
-class AuthStoreManager(context: Context, owner: LifecycleOwner) {
+class AuthStoreManager(val context: Context, owner: LifecycleOwner) {
 
     private val sharedPreferences by lazy {
         context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
@@ -22,6 +23,15 @@ class AuthStoreManager(context: Context, owner: LifecycleOwner) {
                 user_id = getInt(USER_ID, 0),
                 expires_in = getLong(EXPIRES_IN, 0)
             )
+            /*GlobalScope.launch {
+                SessionManager().saveAuthData(context,
+                    Session(
+                        access_token = getString(ACCESS_TOKEN, "") ?: "",
+                        refresh_token = getString(REFRESH_TOKEN, "") ?: "",
+                        user_id = getInt(USER_ID, 0),
+                        expires_in = getLong(EXPIRES_IN, 0))
+                )
+            }*/
         }
     }
 
@@ -62,7 +72,7 @@ class AuthStoreManager(context: Context, owner: LifecycleOwner) {
         if(AuthData.userId > 0 && System.currentTimeMillis() > AuthData.expiresTime) {
             Log.d(Constants.TAG_AUTH, "User token need to update")
             owner.lifecycleScope.launchWhenStarted {
-                refresh()
+                //refresh()
             }
         }
         AuthData.observableSession.observe(owner) {

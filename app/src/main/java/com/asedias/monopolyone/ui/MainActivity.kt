@@ -16,8 +16,7 @@ import com.asedias.monopolyone.api.MonopolyWebSocket
 import com.asedias.monopolyone.databinding.ActivityMainBinding
 import com.asedias.monopolyone.repository.MainRepository
 import com.asedias.monopolyone.ui.viewmodel.MainActivityViewModel
-import com.asedias.monopolyone.util.AuthStoreManager
-import com.asedias.monopolyone.util.WSState
+import com.asedias.monopolyone.util.SocketState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -27,26 +26,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
-    val authStoreManager by lazy {
-        AuthStoreManager(this, this)
-    }
 
     private val mainRepository by lazy {
         MainRepository()
     }
 
-    private val viewModel: MainActivityViewModel by viewModels() {
-        MainActivityViewModel.ProviderFactory(mainRepository)
-    }
+    private val viewModel: MainActivityViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
 
-        authStoreManager.toString()
+        //AuthStoreManager(this, this).toString()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         navController = navHostFragment.navController
 
@@ -66,12 +62,12 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launchWhenStarted {
             MonopolyWebSocket.state.collectLatest {
                 when(it) {
-                    is WSState.Open -> Log.d("MonopolyWebSocket", "Open")
-                    is WSState.Connected -> Log.d("MonopolyWebSocket", "Connected")
-                    is WSState.Failure -> {
+                    is SocketState.Open -> Log.d("MonopolyWebSocket", "Open")
+                    is SocketState.Connected -> Log.d("MonopolyWebSocket", "Connected")
+                    is SocketState.Failure -> {
                         Log.d("MonopolyWebSocket", it.t.localizedMessage)
                     }
-                    is WSState.Closed -> Log.d("MonopolyWebSocket", "Closed cause ${it.reason}")
+                    is SocketState.Closed -> Log.d("MonopolyWebSocket", "Closed cause ${it.reason}")
                 }
             }
         }

@@ -41,7 +41,7 @@ class GamesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter = GamesAdapter()
-        binding.rvMarketThings.apply {
+        binding.recyclerView.apply {
             adapter = this@GamesFragment.adapter
             layoutManager = LinearLayoutManager(activity)
         }
@@ -57,7 +57,7 @@ class GamesFragment : Fragment() {
         visible: Boolean = true,
         click: () -> Unit = {}
     ) {
-        binding.rvMarketThings.isVisible = !visible
+        binding.recyclerView.isVisible = !visible
         binding.errorView.root.isVisible = visible
         binding.errorView.setErrorCode(code)
         binding.errorView.errorButton.setOnClickListener {

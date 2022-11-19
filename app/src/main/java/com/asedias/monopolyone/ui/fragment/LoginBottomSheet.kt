@@ -10,8 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import com.asedias.monopolyone.databinding.SheetLoginBinding
 import com.asedias.monopolyone.repository.AuthRepository
 import com.asedias.monopolyone.ui.viewmodel.LoginViewModel
-import com.asedias.monopolyone.util.AuthData
 import com.asedias.monopolyone.util.Constants
+import com.asedias.monopolyone.util.SessionManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.haroldadmin.cnradapter.NetworkResponse
 
@@ -52,8 +52,8 @@ class LoginBottomSheet : BottomSheetDialogFragment() {
                 when (val auth = AuthRepository().signIn(email, password)) {
                     is NetworkResponse.Success -> {
                         Log.d(Constants.TAG_LOGIN, auth.body.toString())
-                        auth.body.data?.let { it1 ->
-                            AuthData().authorize(it1)
+                        auth.body.data?.let { session ->
+                            SessionManager.saveSession(requireContext(), session)
                         }
                         requireDialog().dismiss()
                     }

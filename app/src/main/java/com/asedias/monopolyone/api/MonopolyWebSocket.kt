@@ -3,9 +3,9 @@ package com.asedias.monopolyone.api
 import com.asedias.monopolyone.model.websocket.AuthMessage
 import com.asedias.monopolyone.model.websocket.EventMessage
 import com.asedias.monopolyone.model.websocket.StatusMessage
-import com.asedias.monopolyone.util.AuthData
-import com.asedias.monopolyone.util.WSMessage
-import com.asedias.monopolyone.util.WSState
+import com.asedias.monopolyone.util.SessionManager
+import com.asedias.monopolyone.util.SocketMessage
+import com.asedias.monopolyone.util.SocketState
 import com.google.gson.Gson
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -24,17 +24,18 @@ class MonopolyWebSocket {
 
         override fun onOpen(webSocket: WebSocket, response: Response) {
             GlobalScope.launch {
-                state.emit(WSState.Open)
+                state.emit(SocketState.Open)
             }
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             GlobalScope.launch {
-                state.emit(WSState.Failure(t))
+                state.emit(SocketState.Failure(t))
             }
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
+            //Log.i(Constants.TAG_WEB_SOCKET, text)
             if (text == "2") {
                 return keepAlive()
             }
@@ -42,19 +43,19 @@ class MonopolyWebSocket {
                 "4auth" -> {
                     val obj = Gson().fromJson(text.drop(5), AuthMessage::class.java)
                     GlobalScope.launch {
-                        _channel.send(WSMessage.Auth(obj))
+                        _channel.send(SocketMessage.Auth(obj))
                     }
                 }
                 "4stat" -> {
                     val obj = Gson().fromJson(text.drop(7), StatusMessage::class.java)
                     GlobalScope.launch {
-                        _channel.send(WSMessage.Status(obj))
+                        _channel.send(SocketMessage.Status(obj))
                     }
                 }
                 "4even" -> {
                     val obj = Gson().fromJson(text.drop(7), EventMessage::class.java)
                     GlobalScope.launch {
-                        _channel.send(WSMessage.Event(obj))
+                        _channel.send(SocketMessage.Event(obj))
                     }
                 }
             }
@@ -62,7 +63,7 @@ class MonopolyWebSocket {
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
             GlobalScope.launch {
-                state.emit(WSState.Closed(reason))
+                state.emit(SocketState.Closed(reason))
             }
         }
     }
@@ -70,19 +71,24 @@ class MonopolyWebSocket {
     companion object {
         const val WS_URL = "wss://monopoly-one.com/ws?subs=rooms"
 
-        private val _channel = Channel<WSMessage>()
+        private val _channel = Channel<SocketMessage>()
         var channel = _channel.receiveAsFlow()
 
-        val state = MutableSharedFlow<WSState>()
+        val state = MutableSharedFlow<SocketState>()
     }
 
     fun keepAlive() {
         webSocket?.send("3")
     }
 
+    private fun buildUrl(): String =
+        if(SessionManager.isUserLogged())
+            "$WS_URL&access_token=${SessionManager.getAccessToken()}"
+        else WS_URL
+
     fun start() {
         val req = Request.Builder()
-            .url("$WS_URL&access_token=${AuthData.accessToken}")
+            .url(buildUrl())
             .build()
         val client = OkHttpClient.Builder()
             .build()

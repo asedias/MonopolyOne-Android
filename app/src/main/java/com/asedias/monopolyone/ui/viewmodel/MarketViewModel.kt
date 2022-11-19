@@ -3,17 +3,17 @@ package com.asedias.monopolyone.ui.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.asedias.monopolyone.api.MonopolyRepository
 import com.asedias.monopolyone.model.DataResponse
 import com.asedias.monopolyone.model.ErrorResponse
 import com.asedias.monopolyone.model.market.Market
-import com.asedias.monopolyone.repository.MarketRepository
 import com.haroldadmin.cnradapter.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MarketViewModel @Inject constructor(private val repository: MarketRepository) : ViewModel() {
+class MarketViewModel @Inject constructor(private val repository: MonopolyRepository) : ViewModel() {
 
     val marketData: MutableLiveData<NetworkResponse<DataResponse<Market>, ErrorResponse>?> =
         MutableLiveData()
