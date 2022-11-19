@@ -1,8 +1,10 @@
 package com.asedias.monopolyone.api
 
+import android.util.Log
 import com.asedias.monopolyone.model.websocket.AuthMessage
 import com.asedias.monopolyone.model.websocket.EventMessage
 import com.asedias.monopolyone.model.websocket.StatusMessage
+import com.asedias.monopolyone.util.Constants
 import com.asedias.monopolyone.util.SessionManager
 import com.asedias.monopolyone.util.SocketMessage
 import com.asedias.monopolyone.util.SocketState
@@ -15,34 +17,54 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import okhttp3.*
 
-class MonopolyWebSocket {
+object MonopolyWebSocket {
+
+    private const val WS_URL = "wss://monopoly-one.com/ws?subs=rooms"
+
+    val state = MutableSharedFlow<SocketState>()
+
+    private val _channel = Channel<SocketMessage>()
+
+    val channel by lazy {
+        if(webSocket == null) webSocket = client.newWebSocket(buildRequest(), listener)
+        _channel.receiveAsFlow()
+    }
+
+    private val client by lazy {
+        OkHttpClient.Builder()
+            .build()
+    }
 
     private var webSocket: WebSocket? = null
+    var authMessage: AuthMessage? = null
 
     @OptIn(DelicateCoroutinesApi::class)
     private var listener = object : WebSocketListener() {
 
         override fun onOpen(webSocket: WebSocket, response: Response) {
+            Log.i(Constants.TAG_WEB_SOCKET, "WebSocket open on $WS_URL")
             GlobalScope.launch {
                 state.emit(SocketState.Open)
             }
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+            Log.i(Constants.TAG_WEB_SOCKET, "WebSocket failure: ${t.localizedMessage}")
             GlobalScope.launch {
                 state.emit(SocketState.Failure(t))
             }
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
-            //Log.i(Constants.TAG_WEB_SOCKET, text)
             if (text == "2") {
                 return keepAlive()
             }
             when (val type = text.subSequence(0, 5)) {
                 "4auth" -> {
                     val obj = Gson().fromJson(text.drop(5), AuthMessage::class.java)
+                    authMessage = obj
                     GlobalScope.launch {
+                        state.emit(SocketState.Authenticated)
                         _channel.send(SocketMessage.Auth(obj))
                     }
                 }
@@ -62,40 +84,37 @@ class MonopolyWebSocket {
         }
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+            Log.i(Constants.TAG_WEB_SOCKET, "WebSocket closed: $code@$reason")
             GlobalScope.launch {
                 state.emit(SocketState.Closed(reason))
             }
         }
     }
 
-    companion object {
-        const val WS_URL = "wss://monopoly-one.com/ws?subs=rooms"
+    fun start() {
+        webSocket = client.newWebSocket(buildRequest(), listener)
+    }
 
-        private val _channel = Channel<SocketMessage>()
-        var channel = _channel.receiveAsFlow()
-
-        val state = MutableSharedFlow<SocketState>()
+    fun reconnect() {
+        cancel()
+        webSocket = client.newWebSocket(buildRequest(), listener)
     }
 
     fun keepAlive() {
         webSocket?.send("3")
     }
 
-    private fun buildUrl(): String =
-        if(SessionManager.isUserLogged())
+    private fun buildUrl() =
+        if (SessionManager.isUserLogged())
             "$WS_URL&access_token=${SessionManager.getAccessToken()}"
         else WS_URL
 
-    fun start() {
-        val req = Request.Builder()
-            .url(buildUrl())
-            .build()
-        val client = OkHttpClient.Builder()
-            .build()
-        webSocket = client.newWebSocket(req, listener)
-    }
+    private fun buildRequest() = Request.Builder()
+        .url(buildUrl())
+        .build()
 
     fun cancel() {
-        webSocket!!.cancel()
+        webSocket?.cancel()
     }
+
 }

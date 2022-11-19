@@ -10,7 +10,7 @@
     <fragment
         android:id="@+id/GamesFragment"
         android:name="com.asedias.monopolyone.ui.fragment.GamesFragment"
-        android:label="@string/games_label"
+        android:label="@string/main_label"
         tools:layout="@layout/fragment_blank">
     </fragment>
     <fragment

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Material3Test</string>
+    <string name="app_name" translatable="false">Monopoly One</string>
     <string name="action_settings">Settings</string>
 
     <!-- Strings user for Bottom Navigation Bar -->
@@ -49,4 +49,5 @@
     <string name="code_12">Authenticator code required.</string>
     <string name="code_98">Method is under maintenance and temporarily disabled.</string>
     <string name="code_99">Unknown error.</string>
+    <string name="main_label">Main</string>
 </resources>

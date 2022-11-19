@@ -1,28 +1,39 @@
 package com.asedias.monopolyone.ui.viewmodel
 
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.asedias.monopolyone.model.account.Account
-import com.asedias.monopolyone.repository.MainRepository
-import com.haroldadmin.cnradapter.NetworkResponse
+import com.asedias.monopolyone.api.MonopolyRepository
+import com.asedias.monopolyone.api.MonopolyWebSocket
+import com.asedias.monopolyone.model.websocket.AuthMessage
+import com.asedias.monopolyone.util.SocketState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainActivityViewModel @Inject constructor(private val repository: MainRepository) : ViewModel() {
+class MainActivityViewModel @Inject constructor(private val repository: MonopolyRepository) : ViewModel() {
 
-    private val _account = MutableSharedFlow<Account?>()
-    val account = _account.asSharedFlow()
+    var avatarDrawable: Drawable? = null
 
-    fun getAccountInfo() = viewModelScope.launch {
-        when(val req = repository.getAccountInfo()) {
-            is NetworkResponse.Success -> req.body.data.let { _account.emit(it) }
-            is NetworkResponse.Error -> {
-                _account.emit(null)
+    private val _userData = MutableSharedFlow<AuthMessage>()
+    val userData = _userData.asSharedFlow()
+
+    private fun collectUserData() = viewModelScope.launch {
+        MonopolyWebSocket.state.collectLatest {
+            when (it) {
+                is SocketState.Authenticated -> {
+                    _userData.emit(MonopolyWebSocket.authMessage!!)
+                }
+                else -> Unit
             }
         }
+    }
+
+    init {
+        collectUserData()
     }
 }

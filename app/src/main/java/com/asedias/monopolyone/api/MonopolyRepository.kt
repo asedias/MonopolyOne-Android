@@ -1,7 +1,7 @@
 package com.asedias.monopolyone.api
 
 import com.asedias.monopolyone.util.SessionManager
-import com.asedias.monopolyone.util.SessionManager.toInt
+import com.asedias.monopolyone.util.toInt
 import kotlinx.coroutines.flow.first
 
 class MonopolyRepository {
@@ -24,7 +24,7 @@ class MonopolyRepository {
         )
     }
 
-    suspend fun getAccountInfo() = RetrofitInstance.api.getAccountInfo()
+    suspend fun getAccountInfo() = sessionWaitCall { RetrofitInstance.api.getAccountInfo() }
 
     suspend fun getLastSellups(offset: Int, count: Int) =
         RetrofitInstance.api.getLastSellups(offset, count)

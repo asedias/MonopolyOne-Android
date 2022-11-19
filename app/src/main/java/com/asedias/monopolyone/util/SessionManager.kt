@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.asedias.monopolyone.api.MonopolyRepository
+import com.asedias.monopolyone.api.MonopolyWebSocket
 import com.asedias.monopolyone.model.auth.Session
 import com.haroldadmin.cnradapter.NetworkResponse
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -39,6 +40,7 @@ object SessionManager {
             if (needRefreshToken()) {
                 refreshToken(context)
             } else {
+                MonopolyWebSocket.reconnect()
                 sessionFlow.emit(currentSession)
             }
         }
@@ -71,8 +73,6 @@ object SessionManager {
     }
 
     fun isUserLogged() = currentSession.user_id > 0
-    fun Boolean.toInt() = if (this) 1 else 0
-
     fun getAccessToken() = currentSession.access_token
     fun getRefreshToken() = currentSession.refresh_token
     fun getExpiresTime() = currentSession.expires_in

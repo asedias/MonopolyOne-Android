@@ -14,6 +14,7 @@ import com.asedias.monopolyone.util.Constants
 import com.asedias.monopolyone.util.SocketMessage
 import com.haroldadmin.cnradapter.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,7 +29,7 @@ class GamesViewModel @Inject constructor(private val repository: MonopolyReposit
         getGamesInfo()
     }
 
-    fun getGamesInfo() = viewModelScope.launch {
+    fun getGamesInfo() = viewModelScope.launch(Dispatchers.IO) {
         when (val games = repository.getGames()) {
             is NetworkResponse.Success -> {
                 data = games.body.result

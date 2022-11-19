@@ -9,6 +9,7 @@
     tools:context=".ui.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true">
@@ -17,11 +18,13 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:titleCentered="true"
-            app:subtitleCentered="true"
-            app:liftOnScroll="true"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
             app:liftOnScrollTargetViewId="@+id/recycler_view"
-            app:layout_scrollFlags="scroll|enterAlways|snap"/>
+            app:logo="@drawable/ic_logo"
+            app:subtitleCentered="true"
+            app:titleCentered="true"
+            tools:menu="@menu/menu_main"
+            tools:title="@string/app_name" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -36,7 +39,6 @@
         android:layout_gravity="bottom"
         android:fitsSystemWindows="true"
         app:labelVisibilityMode="labeled"
-        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
-        app:menu="@menu/nav_bottom_main" />
+        app:menu="@menu/bottom_nav" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
