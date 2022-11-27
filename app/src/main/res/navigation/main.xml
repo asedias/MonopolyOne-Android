@@ -9,7 +9,7 @@
     <!-- android:name="com.asedias.monopolyone.ui.fragment.GamesFragment" -->
     <fragment
         android:id="@+id/GamesFragment"
-        android:name="com.asedias.monopolyone.ui.fragment.GamesFragment"
+        android:name="com.asedias.monopolyone.ui.fragment.MainFragment"
         android:label="@string/main_label"
         tools:layout="@layout/fragment_blank">
     </fragment>

@@ -14,15 +14,17 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.asedias.monopolyone.R
-import com.asedias.monopolyone.api.MonopolyWebSocket
+import com.asedias.monopolyone.data.MonopolyWebSocket
+import com.asedias.monopolyone.data.repository.AuthRepositoryImpl
 import com.asedias.monopolyone.databinding.ActivityMainBinding
 import com.asedias.monopolyone.ui.fragment.LoginBottomSheet
 import com.asedias.monopolyone.ui.viewmodel.MainActivityViewModel
-import com.asedias.monopolyone.util.SessionManager
+import com.asedias.monopolyone.domain.model.websocket.SessionManager
 import com.asedias.monopolyone.util.getCacheImageLoader
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -32,6 +34,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
 
     private val viewModel: MainActivityViewModel by viewModels()
+
+    @Inject
+    lateinit var authRepositoryImpl: AuthRepositoryImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -68,13 +73,13 @@ class MainActivity : AppCompatActivity() {
             menu.getItem(0).icon = it
         }
         menu.getItem(0).setOnMenuItemClickListener {
-            if (!SessionManager.isUserLogged()) {
+            if (authRepositoryImpl.currentSession.user_id > 0) {
                 LoginBottomSheet().show(supportFragmentManager, LoginBottomSheet.TAG)
                 return@setOnMenuItemClickListener true
             }
             Snackbar.make(
                 binding.bottomNavBar,
-                SessionManager.getAccessToken(),
+                authRepositoryImpl.currentSession.access_token,
                 Snackbar.LENGTH_INDEFINITE
             ).apply { anchorView = binding.bottomNavBar }.show()
             true

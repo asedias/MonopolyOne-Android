@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.decode.SvgDecoder
 import coil.load
 import com.asedias.monopolyone.databinding.MarketListItemBinding
-import com.asedias.monopolyone.model.market.Thing
+import com.asedias.monopolyone.domain.model.market.Thing
 
 class MarketAdapter: RecyclerView.Adapter<BindingViewHolder<MarketListItemBinding>>() {
 

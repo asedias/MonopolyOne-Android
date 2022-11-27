@@ -4,24 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.asedias.monopolyone.databinding.FragmentRecyclerViewBinding
-import com.asedias.monopolyone.domain.model.Response
-import com.asedias.monopolyone.ui.adapter.MarketAdapter
-import com.asedias.monopolyone.ui.viewmodel.MarketViewModel
+import com.asedias.monopolyone.ui.UIState
+import com.asedias.monopolyone.ui.adapter.MainFragmentAdapter
+import com.asedias.monopolyone.ui.viewmodel.MainFragmentViewModel
 import com.asedias.monopolyone.util.setErrorCode
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MarketFragment : Fragment() {
+class MainFragment : Fragment() {
 
-    private val viewModel: MarketViewModel by viewModels()
-    private lateinit var marketAdapter: MarketAdapter
+    private val viewModel: MainFragmentViewModel by viewModels()
+    private lateinit var adapter: MainFragmentAdapter
 
     companion object {
-        fun newInstance() = MarketFragment()
+        fun newInstance() = MainFragment()
     }
 
     private var _binding: FragmentRecyclerViewBinding? = null
@@ -38,40 +41,40 @@ class MarketFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        marketAdapter = MarketAdapter()
+        adapter = MainFragmentAdapter()
         binding.recyclerView.apply {
-            adapter = marketAdapter
+            adapter = this@MainFragment.adapter
             layoutManager = LinearLayoutManager(activity)
         }
-        viewModel.marketData.observe(viewLifecycleOwner) { market ->
-            when (market) {
-                is Response.Success -> {
-                    marketAdapter.differ.submitList(market.data.things)
-                }
-                is Response.Error -> {
-                    handleErrorView(market.code)
+        lifecycleScope.launch {
+            viewModel.state.observe(viewLifecycleOwner) { state ->
+                when (state) {
+                    is UIState.Show -> adapter.setData(state.data)
+                    is UIState.Update -> adapter.setData(state.data)
+                    is UIState.Error -> handleErrorView(state.code)
+                    is UIState.Loading -> binding.progressBar.isVisible = true
                 }
             }
         }
     }
 
-    private fun handleErrorView(code: Int = 0, visibility: Int = View.VISIBLE) {
-        handleProgress(View.INVISIBLE)
-        binding.errorView.root.visibility = visibility
+    private fun handleErrorView(
+        code: Int = 0,
+        visible: Boolean = true,
+        click: () -> Unit = {}
+    ) {
+        binding.recyclerView.isVisible = !visible
+        binding.errorView.root.isVisible = visible
         binding.errorView.setErrorCode(code)
         binding.errorView.errorButton.setOnClickListener {
-            viewModel.tryAgain()
-            handleErrorView(visibility = View.GONE)
-            handleProgress()
+            click()
+            handleErrorView(visible = false)
         }
-    }
-
-    private fun handleProgress(visibility: Int = View.VISIBLE) {
-        binding.progressBar.visibility = visibility
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
 }

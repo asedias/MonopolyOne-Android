@@ -7,14 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.asedias.monopolyone.data.repository.AuthRepositoryImpl
 import com.asedias.monopolyone.databinding.SheetLoginBinding
-import com.asedias.monopolyone.repository.AuthRepository
+import com.asedias.monopolyone.domain.model.auth.LoginData
 import com.asedias.monopolyone.ui.viewmodel.LoginViewModel
-import com.asedias.monopolyone.util.Constants
-import com.asedias.monopolyone.util.SessionManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.haroldadmin.cnradapter.NetworkResponse
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LoginBottomSheet : BottomSheetDialogFragment() {
 
     private var _binding: SheetLoginBinding? = null
@@ -22,6 +23,11 @@ class LoginBottomSheet : BottomSheetDialogFragment() {
 
     private val binding get() = _binding!!
 
+    //@Inject
+    //lateinit var sessionManager: SessionManager
+
+    @Inject
+    lateinit var authRepository: AuthRepositoryImpl
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,11 +55,26 @@ class LoginBottomSheet : BottomSheetDialogFragment() {
                 val email = binding.email.text.toString()
                 val password = binding.pass.text.toString()
                 viewModel.setIsLoading(true)
+                when(val result = authRepository.login(email, password)) {
+                    is LoginData.Success -> {
+                        authRepository.saveToLocal(result.session)
+                        Log.d(TAG, "$result")
+                        requireDialog().dismiss()
+                    }
+                    is LoginData.TOTPNeeded -> {
+                        Log.d(TAG, "$result")
+                    }
+                    is LoginData.Error -> {
+                        Log.d(TAG, "$result")
+                    }
+                }
+                viewModel.setIsLoading(false)
+                /*
                 when (val auth = AuthRepository().signIn(email, password)) {
                     is NetworkResponse.Success -> {
                         Log.d(Constants.TAG_LOGIN, auth.body.toString())
                         auth.body.data?.let { session ->
-                            SessionManager.saveSession(requireContext(), session)
+                            sessionManager.saveSession(session)
                         }
                         requireDialog().dismiss()
                     }
@@ -77,6 +98,7 @@ class LoginBottomSheet : BottomSheetDialogFragment() {
                     }
                 }
                 viewModel.setIsLoading(false)
+                 */
             }
         }
     }
