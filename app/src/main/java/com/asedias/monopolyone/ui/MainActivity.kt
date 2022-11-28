@@ -14,12 +14,10 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.asedias.monopolyone.R
-import com.asedias.monopolyone.data.MonopolyWebSocket
 import com.asedias.monopolyone.data.repository.AuthRepositoryImpl
 import com.asedias.monopolyone.databinding.ActivityMainBinding
 import com.asedias.monopolyone.ui.fragment.LoginBottomSheet
 import com.asedias.monopolyone.ui.viewmodel.MainActivityViewModel
-import com.asedias.monopolyone.domain.model.websocket.SessionManager
 import com.asedias.monopolyone.util.getCacheImageLoader
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.snackbar.Snackbar
@@ -73,15 +71,15 @@ class MainActivity : AppCompatActivity() {
             menu.getItem(0).icon = it
         }
         menu.getItem(0).setOnMenuItemClickListener {
-            if (authRepositoryImpl.currentSession.user_id > 0) {
+            if (authRepositoryImpl.currentSession.user_id == 0) {
                 LoginBottomSheet().show(supportFragmentManager, LoginBottomSheet.TAG)
-                return@setOnMenuItemClickListener true
+            } else {
+                Snackbar.make(
+                    binding.bottomNavBar,
+                    authRepositoryImpl.currentSession.access_token,
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply { anchorView = binding.bottomNavBar }.show()
             }
-            Snackbar.make(
-                binding.bottomNavBar,
-                authRepositoryImpl.currentSession.access_token,
-                Snackbar.LENGTH_INDEFINITE
-            ).apply { anchorView = binding.bottomNavBar }.show()
             true
         }
         return super.onCreateOptionsMenu(menu)
@@ -99,7 +97,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.userData.collect { message ->
             if (message.status > 0) {
                 val req = ImageRequest.Builder(this@MainActivity)
-                    .data(MonopolyWebSocket.authMessage!!.user_data.avatar)
+                    .data(message.user_data.avatar)
                     .decoderFactory(SvgDecoder.Factory())
                     .transformations(CircleCropTransformation())
                     .build()

@@ -4,7 +4,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.asedias.monopolyone.MonopolyApp
-import com.asedias.monopolyone.data.MonopolyAPI
+import com.asedias.monopolyone.data.remote.MonopolyAPI
 import com.asedias.monopolyone.domain.model.auth.LoginData
 import com.asedias.monopolyone.domain.model.DataResponse
 import com.asedias.monopolyone.domain.model.ErrorResponse

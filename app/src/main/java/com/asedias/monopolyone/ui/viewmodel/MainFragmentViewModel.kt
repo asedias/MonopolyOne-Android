@@ -1,75 +1,66 @@
 package com.asedias.monopolyone.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.asedias.monopolyone.data.MonopolyWebSocket
+import com.asedias.monopolyone.data.remote.WebSocketClient
+import com.asedias.monopolyone.domain.model.ResponseState
 import com.asedias.monopolyone.data.repository.MainPageRepositoryImpl
-import com.asedias.monopolyone.domain.model.Response
 import com.asedias.monopolyone.domain.model.main_page.MainPageData
 import com.asedias.monopolyone.domain.model.main_page.Room
 import com.asedias.monopolyone.domain.model.websocket.EventMessage
-import com.asedias.monopolyone.domain.model.websocket.SocketMessage
+import com.asedias.monopolyone.domain.websocket.WebSocketMessage
 import com.asedias.monopolyone.ui.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainFragmentViewModel @Inject constructor(private val repository: MainPageRepositoryImpl) :
+class MainFragmentViewModel @Inject constructor(
+    private val repository: MainPageRepositoryImpl,
+    private val webSocketClient: WebSocketClient,
+) :
     ViewModel() {
 
-    //private val _data = MutableLiveData<MainPageData>()
-    //val data: LiveData<MainPageData>
-    //    get() = _data
-
-    private val _state = MutableLiveData<UIState<MainPageData>>()
+    private val _state = MutableLiveData<UIState<MainPageData>>(UIState.Loading())
     val state: LiveData<UIState<MainPageData>>
         get() = _state
+
     private lateinit var data: MainPageData
 
     init {
         getMainData()
     }
 
-    fun getMainData() = viewModelScope.launch(Dispatchers.IO) {
+    fun getMainData() = viewModelScope.launch {
         when (val result = repository.getMainPageData()) {
-            is Response.Success -> {
+            is ResponseState.Success -> {
                 data = result.data
                 _state.postValue(UIState.Show(data))
                 retrieveEvents()
-                TODO("WebSocket Events Handler")
             }
-            is Response.Error -> {
+            is ResponseState.Error -> {
                 _state.postValue(UIState.Error(result.code))
-                TODO("Error View Handler")
             }
+            is ResponseState.Nothing -> Unit
         }
     }
 
     private suspend fun retrieveEvents() {
-        MonopolyWebSocket.channel.collect() { wsMessage ->
-            when (wsMessage) {
-                is SocketMessage.Event -> {
-                    wsMessage.data.users_data?.let {
-                        data.rooms.users_data.addAll(it)
-                        _state.postValue(UIState.Update(data))
-                    }
-                    handleEvent(wsMessage.data)
-                }
-                is SocketMessage.Auth -> {}
-                is SocketMessage.Status -> {}
-                is SocketMessage.Error -> {}
+        webSocketClient.getMessages()
+            .filter { it is WebSocketMessage.Event }
+            .collect { message ->
+                val event = message as WebSocketMessage.Event
+                event.data.users_data?.let { data.rooms.users_data.addAll(it) }
+                handleEvent(event.data)
+                _state.postValue(UIState.Update(data))
             }
-        }
     }
 
     private fun handleEvent(message: EventMessage) {
         message.events.forEach { event ->
-            Log.d(javaClass.name, "${event.room_id}: ${event.type}")
             when (event.type) {
                 "room.set" -> message.rooms!!.forEach { addRoom(it) }
                 "room.delete" -> deleteRoom(event.room_id)
@@ -77,7 +68,6 @@ class MainFragmentViewModel @Inject constructor(private val repository: MainPage
                 "gchat.add" -> Unit
             }
         }
-        _state.postValue(UIState.Update(data))
     }
 
     private fun addRoom(room: Room) =

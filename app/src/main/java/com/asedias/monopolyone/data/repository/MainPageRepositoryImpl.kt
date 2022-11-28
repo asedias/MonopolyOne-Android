@@ -1,7 +1,8 @@
 package com.asedias.monopolyone.data.repository
 
-import com.asedias.monopolyone.data.MonopolyAPI
-import com.asedias.monopolyone.domain.model.Response
+import com.asedias.monopolyone.data.remote.MonopolyAPI
+import com.asedias.monopolyone.domain.model.ResponseState
+import com.asedias.monopolyone.domain.model.auth.LoginData
 import com.asedias.monopolyone.domain.model.main_page.MainPageData
 import com.asedias.monopolyone.domain.repository.MainPageRepository
 import com.haroldadmin.cnradapter.NetworkResponse
@@ -12,21 +13,29 @@ class MainPageRepositoryImpl @Inject constructor(
     val authRepositoryImpl: AuthRepositoryImpl
 ) : MainPageRepository {
 
-    override suspend fun getMainPageData(): Response<MainPageData> {
+    override suspend fun getMainPageData(): ResponseState<MainPageData> {
         return awaitSessionCall(authRepositoryImpl) {
             return@awaitSessionCall when (val result = api.getMainPageData(generateParams())) {
-                is NetworkResponse.Success -> Response.Success(result.body.result)
-                is NetworkResponse.UnknownError ->
-                    if(result.body != null)
-                        Response.Error(result.body!!.code)
-                    else
-                        Response.Error(99)
+                is NetworkResponse.Success -> ResponseState.Success(result.body.result)
                 is NetworkResponse.ServerError ->
-                    if(result.body != null)
-                        Response.Error(result.body!!.code)
+                    if (result.body != null) {
+                        if (result.body!!.code == 1) {
+                            val login = authRepositoryImpl.refresh()
+                            if(login is LoginData.Error) {
+                                ResponseState.Error<MainPageData>(login.code)
+                            }
+                            ResponseState.Nothing<MainPageData>()
+                            getMainPageData()
+                        }
+                        ResponseState.Error(result.body!!.code)
+                    } else
+                        ResponseState.Error(10)
+                is NetworkResponse.UnknownError ->
+                    if (result.body != null)
+                        ResponseState.Error(result.body!!.code)
                     else
-                        Response.Error(10)
-                is NetworkResponse.NetworkError -> Response.Error()
+                        ResponseState.Error(99)
+                is NetworkResponse.NetworkError -> ResponseState.Error()
             }
         }
     }

@@ -2,7 +2,7 @@ package com.asedias.monopolyone.di
 
 import android.app.Application
 import com.asedias.monopolyone.MonopolyApp
-import com.asedias.monopolyone.data.MonopolyAPI
+import com.asedias.monopolyone.data.remote.MonopolyAPI
 import com.asedias.monopolyone.data.repository.AuthRepositoryImpl
 import com.asedias.monopolyone.data.repository.MarketRepositoryImpl
 import com.asedias.monopolyone.domain.repository.MarketRepository

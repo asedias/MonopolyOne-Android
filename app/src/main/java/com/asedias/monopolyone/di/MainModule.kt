@@ -3,7 +3,8 @@ package com.asedias.monopolyone.di
 import android.app.Application
 import com.asedias.monopolyone.BuildConfig
 import com.asedias.monopolyone.MonopolyApp
-import com.asedias.monopolyone.data.MonopolyAPI
+import com.asedias.monopolyone.data.remote.MonopolyAPI
+import com.asedias.monopolyone.data.remote.WebSocketClient
 import com.asedias.monopolyone.data.repository.AuthRepositoryImpl
 import com.haroldadmin.cnradapter.NetworkResponseAdapterFactory
 import dagger.Module
@@ -19,16 +20,22 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object MainModule {
+
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
+    fun provideHttpClient(): OkHttpClient {
         val logging = HttpLoggingInterceptor()
         logging.level =
             if (BuildConfig.DEBUG)
                 HttpLoggingInterceptor.Level.BODY
             else
                 HttpLoggingInterceptor.Level.NONE
-        val client = OkHttpClient.Builder().addInterceptor(logging).build()
+        return OkHttpClient.Builder().addInterceptor(logging).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(client: OkHttpClient): Retrofit {
         return Retrofit.Builder().baseUrl(MonopolyAPI.BASE_URL)
             .addCallAdapterFactory(NetworkResponseAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create()).client(client).build()
@@ -44,5 +51,15 @@ object MainModule {
     @Singleton
     fun provideAuthRepo(api: MonopolyAPI, app: Application): AuthRepositoryImpl {
         return AuthRepositoryImpl(api, app as MonopolyApp)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSocketClient(
+        client: OkHttpClient,
+        authRepositoryImpl: AuthRepositoryImpl,
+        app: Application
+    ): WebSocketClient {
+        return WebSocketClient(client, authRepositoryImpl, app as MonopolyApp)
     }
 }

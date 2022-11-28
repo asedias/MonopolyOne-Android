@@ -1,4 +1,4 @@
-package com.asedias.monopolyone.data
+package com.asedias.monopolyone.data.remote
 
 import com.asedias.monopolyone.domain.model.*
 import com.asedias.monopolyone.domain.model.account.Account
@@ -61,7 +61,7 @@ interface MonopolyAPI {
     suspend fun getUser(
         @Query("user_id")
         user_id: Int = 0
-    ): NetworkResponse<ListResponse<User>, ErrorResponse>
+    ): NetworkResponse<DataResponse<List<User>>, ErrorResponse>
 
     //Friends
     @GET("friends.get")

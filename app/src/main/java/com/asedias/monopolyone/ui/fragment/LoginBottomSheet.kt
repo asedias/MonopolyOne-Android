@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.asedias.monopolyone.data.remote.WebSocketClient
 import com.asedias.monopolyone.data.repository.AuthRepositoryImpl
 import com.asedias.monopolyone.databinding.SheetLoginBinding
 import com.asedias.monopolyone.domain.model.auth.LoginData
@@ -23,11 +24,11 @@ class LoginBottomSheet : BottomSheetDialogFragment() {
 
     private val binding get() = _binding!!
 
-    //@Inject
-    //lateinit var sessionManager: SessionManager
-
     @Inject
     lateinit var authRepository: AuthRepositoryImpl
+
+    @Inject
+    lateinit var webSocketClient: WebSocketClient
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,6 +59,7 @@ class LoginBottomSheet : BottomSheetDialogFragment() {
                 when(val result = authRepository.login(email, password)) {
                     is LoginData.Success -> {
                         authRepository.saveToLocal(result.session)
+                        webSocketClient.reconnect()
                         Log.d(TAG, "$result")
                         requireDialog().dismiss()
                     }

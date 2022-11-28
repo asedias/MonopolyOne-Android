@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.asedias.monopolyone.databinding.FragmentRecyclerViewBinding
-import com.asedias.monopolyone.domain.model.Response
+import com.asedias.monopolyone.ui.UIState
 import com.asedias.monopolyone.ui.adapter.MarketAdapter
 import com.asedias.monopolyone.ui.viewmodel.MarketViewModel
 import com.asedias.monopolyone.util.setErrorCode
@@ -43,14 +44,12 @@ class MarketFragment : Fragment() {
             adapter = marketAdapter
             layoutManager = LinearLayoutManager(activity)
         }
-        viewModel.marketData.observe(viewLifecycleOwner) { market ->
-            when (market) {
-                is Response.Success -> {
-                    marketAdapter.differ.submitList(market.data.things)
-                }
-                is Response.Error -> {
-                    handleErrorView(market.code)
-                }
+        viewModel.state.observe(viewLifecycleOwner) { state ->
+            when(state) {
+                is UIState.Show -> marketAdapter.differ.submitList(state.data.things)
+                is UIState.Update -> marketAdapter.differ.submitList(state.data.things)
+                is UIState.Error -> handleErrorView(state.code)
+                is UIState.Loading -> binding.progressBar.isVisible = true
             }
         }
     }
@@ -60,7 +59,7 @@ class MarketFragment : Fragment() {
         binding.errorView.root.visibility = visibility
         binding.errorView.setErrorCode(code)
         binding.errorView.errorButton.setOnClickListener {
-            viewModel.tryAgain()
+            viewModel.getLastSellups()
             handleErrorView(visibility = View.GONE)
             handleProgress()
         }
