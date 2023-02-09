@@ -24,4 +24,7 @@
     <string name="code_98">Метод находится на технических работах и временно отключён.</string>
     <string name="code_99">Неизвестная ошибка.</string>
     <string name="main_label">Главная</string>
+    <string name="splash_connecting">Подключаемся к серверам...</string>
+    <string name="splash_half">Обновляем данные...</string>
+    <string name="splash_connected">Добро пожаловать!</string>
 </resources>

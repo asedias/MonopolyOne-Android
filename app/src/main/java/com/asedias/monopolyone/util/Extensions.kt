@@ -1,6 +1,7 @@
 package com.asedias.monopolyone.util
 
 import android.content.Context
+import androidx.annotation.StringRes
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
@@ -23,8 +24,8 @@ fun Context.getCacheImageLoader() = ImageLoader.Builder(this)
     }
     .build()
 
-fun ErrorViewBinding.setErrorCode(code: Int) {
-    val resId: Int = when (code) {
+fun getErrorStringRes(code: Int) : Int {
+    return when (code) {
         1 -> R.string.code_1
         2 -> R.string.code_2
         3 -> R.string.code_3
@@ -39,7 +40,10 @@ fun ErrorViewBinding.setErrorCode(code: Int) {
         99 -> R.string.code_99
         else -> R.string.network_error
     }
-    errorDescription.setText(resId)
+}
+
+fun ErrorViewBinding.setErrorCode(code: Int) {
+    errorDescription.setText(getErrorStringRes(code))
 }
 
 fun ErrorViewBinding.setErrorMessage(message: String) {

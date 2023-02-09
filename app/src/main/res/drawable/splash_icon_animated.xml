@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:drawable="@drawable/splash_icon">
+    <target android:name="logoContainer">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="1000"
+                    android:interpolator="@android:anim/anticipate_interpolator"
+                    android:propertyName="scaleX"
+                    android:valueFrom="1"
+                    android:valueTo="1.41" />
+                <objectAnimator
+                    android:duration="1000"
+                    android:interpolator="@android:anim/anticipate_interpolator"
+                    android:propertyName="scaleY"
+                    android:valueFrom="1"
+                    android:valueTo="1.41" />
+                <objectAnimator
+                    android:duration="1000"
+                    android:interpolator="@android:anim/anticipate_interpolator"
+                    android:propertyName="translateY"
+                    android:valueFrom="0"
+                    android:valueTo="-38" />
+                <objectAnimator
+                    android:duration="1000"
+                    android:interpolator="@android:anim/anticipate_interpolator"
+                    android:propertyName="translateX"
+                    android:valueFrom="0"
+                    android:valueTo="-38" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="logo">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="1000"
+                android:interpolator="@android:anim/linear_interpolator"
+                android:propertyName="fillColor"
+                android:valueFrom="#FFFFFFFF"
+                android:valueTo="#FF37BC9D" />
+        </aapt:attr>
+    </target>
+    <target android:name="circle">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="1000"
+                android:interpolator="@android:anim/linear_interpolator"
+                android:propertyName="fillAlpha"
+                android:valueFrom="1"
+                android:valueTo="0" />
+        </aapt:attr>
+    </target>
+</animated-vector>

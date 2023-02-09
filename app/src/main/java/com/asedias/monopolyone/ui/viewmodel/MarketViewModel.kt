@@ -23,7 +23,7 @@ class MarketViewModel @Inject constructor(private val repository: MarketReposito
         when(val result = repository.getLastSellups(offset)) {
             is ResponseState.Success -> _state.postValue(UIState.Show(result.data))
             is ResponseState.Error -> _state.postValue(UIState.Error(result.code))
-            is ResponseState.Nothing -> Unit
+            is ResponseState.Nothing<*> -> Unit
         }
     }
 

@@ -44,7 +44,7 @@ class MainFragmentViewModel @Inject constructor(
             is ResponseState.Error -> {
                 _state.postValue(UIState.Error(result.code))
             }
-            is ResponseState.Nothing -> Unit
+            is ResponseState.Nothing<*> -> Unit
         }
     }
 

@@ -28,7 +28,7 @@ class MarketRepositoryImpl @Inject constructor(
                             if(login is LoginData.Error) {
                                 ResponseState.Error<Market>(login.code)
                             }
-                            ResponseState.Nothing<Market>()
+                            ResponseState.Nothing<Any>()
                             getLastSellups(offset)
                         }
                         ResponseState.Error(result.body!!.code)

@@ -2,7 +2,7 @@ package com.asedias.monopolyone.domain.model
 
 //Name conflict with okHttp3.Response
 sealed class ResponseState<T : Any> {
-    data class Nothing<T : Any>(val code: Int = 0) : ResponseState<T>()
+    data class Nothing<T : Any>(val code: Int = 0) : ResponseState<Any>()
     data class Success<T : Any>(val data: T) : ResponseState<T>()
     data class Error<T : Any>(val code: Int = 0) : ResponseState<T>()
 }

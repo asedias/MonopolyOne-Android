@@ -29,7 +29,7 @@ class WebSocketClient @Inject constructor(
 
     override suspend fun connect() {
         authRepositoryImpl.loadFromLocal().first()
-        if(currentSocket != null) return
+        if (currentSocket != null) return
         currentSocket = client.newWebSocket(buildRequest(), object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 app.applicationScope.launch { _state.emit(WebSocketState.Open) }
@@ -37,7 +37,7 @@ class WebSocketClient @Inject constructor(
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 app.applicationScope.launch { _state.emit(WebSocketState.Failure(t)) }
-                if(reconnectOnFailure) reconnect()
+                if (reconnectOnFailure) reconnect()
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
@@ -46,7 +46,8 @@ class WebSocketClient @Inject constructor(
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 app.applicationScope.launch {
-                    _state.emit(WebSocketState.Connected(handleMessage(text)))
+                    val message = handleMessage(text)
+                    _state.emit(WebSocketState.Connected(message))
                 }
             }
         })
@@ -83,13 +84,16 @@ class WebSocketClient @Inject constructor(
 
     override fun getMessages(): Flow<WebSocketMessage> =
         flow {
-            if(currentSocket == null) connect()
+            if (currentSocket == null) connect()
             emitAll(_state.filter { it is WebSocketState.Connected }.map {
-                (it as WebSocketState.Connected).last
+                (it as WebSocketState.Connected).message
             })
         }
 
-    override fun getState() = _state
+    override suspend fun getState(): MutableStateFlow<WebSocketState> {
+        if(currentSocket == null) connect()
+        return _state
+    }
 
     override suspend fun sendMessage(message: String) {
         currentSocket?.send(message)

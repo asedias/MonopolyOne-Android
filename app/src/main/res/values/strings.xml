@@ -9,6 +9,12 @@
     <string name="chats_label">Chats</string>
     <string name="profile_label">Profile</string>
     <string name="market_label">Market</string>
+    <string name="main_label">Main</string>
+
+    <!-- Splash Strings -->
+    <string name="splash_connecting">Connecting to servers...</string>
+    <string name="splash_half">Updating data...</string>
+    <string name="splash_connected">Well met!</string>
 
     <string name="login_desc">Log in with your Monopoly One account.</string>
 
@@ -49,5 +55,4 @@
     <string name="code_12">Authenticator code required.</string>
     <string name="code_98">Method is under maintenance and temporarily disabled.</string>
     <string name="code_99">Unknown error.</string>
-    <string name="main_label">Main</string>
 </resources>

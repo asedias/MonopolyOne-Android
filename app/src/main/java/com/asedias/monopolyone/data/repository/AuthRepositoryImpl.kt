@@ -1,5 +1,6 @@
 package com.asedias.monopolyone.data.repository
 
+import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -32,12 +33,13 @@ class AuthRepositoryImpl @Inject constructor(
         return retrieveLoginData(api.refreshAuth(currentSession.refresh_token))
     }
 
-    private fun retrieveLoginData(result: NetworkResponse<DataResponse<Session>, ErrorResponse>): LoginData {
+    private suspend fun retrieveLoginData(result: NetworkResponse<DataResponse<Session>, ErrorResponse>): LoginData {
         when (result) {
             is NetworkResponse.Success -> {
                 if (result.body.code == 0) {
                     return if (result.body.data.user_id > 0) {
                         currentSession = result.body.data
+                        saveToLocal(currentSession)
                         LoginData.Success(result.body.data)
                     } else {
                         LoginData.TOTPNeeded(result.body.data.totp_session_token!!)
@@ -83,6 +85,7 @@ class AuthRepositoryImpl @Inject constructor(
                 user_id = it[KEY_USER_ID] ?: 0,
                 expires_in = it[KEY_EXPIRES_IN] ?: 0,
             )
+            Log.d("AuthRepo", "DataStore Mapped")
             currentSession
         }
         return flow {

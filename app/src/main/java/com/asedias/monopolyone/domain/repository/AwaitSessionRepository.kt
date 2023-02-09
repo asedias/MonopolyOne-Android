@@ -8,9 +8,11 @@ interface AwaitSessionRepository {
     suspend fun <Type : ResponseState<*>> awaitSessionCall(authRepository: AuthRepository, call: suspend () -> Type): Type {
         authRepository.loadFromLocal().first()
         val result = call()
-        if(result is ResponseState.Error<*> && result.code == 8) {
+        if(result is ResponseState.Error<*> && result.code == 1) {
+           //if(authRepository.refresh() is LoginData.Success)
+                //return ResponseState.Nothing<Any>()
             refreshAuth(authRepository)
-            TODO("Попытаться обновить данные, если гавно то сбросить их и повторить запрос с новыми параметрами")
+            TODO("Попытаться обновить данные, если плохие то сбросить их и повторить запрос с новыми параметрами")
         }
         return call()
     }

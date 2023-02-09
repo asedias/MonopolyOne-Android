@@ -7,7 +7,7 @@ interface WebSocketClient {
     suspend fun connect()
     fun disconnect()
     fun getMessages(): Flow<WebSocketMessage>
-    fun getState(): Flow<WebSocketState>
+    suspend fun getState(): Flow<WebSocketState>
     suspend fun sendMessage(message: String)
     suspend fun handleMessage(message: String) : WebSocketMessage
 }
